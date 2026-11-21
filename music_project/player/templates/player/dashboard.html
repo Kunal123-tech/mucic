@@ -1,0 +1,46 @@
+{% extends 'player/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h1>CasaMusic</h1>
+    <h2>Upload New Song</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Song Title:</label>
+        <input type="text" name="title" required>
+
+        <label>Artist Name:</label>
+        <input type="text" name="artist" required>
+
+        <label>Audio File (MP3/WAV):</label>
+        <input type="file" name="audio_file" accept="audio/*" required>
+
+        <button type="submit" class="btn">Upload Song</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>My Uploaded Songs</h2>
+    {% if songs %}
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Actions</th>
+            </tr>
+            {% for song in songs %}
+            <tr>
+                <td>{{ song.title }}</td>
+                <td>{{ song.artist }}</td>
+                <td>
+                    <a href="{% url 'music_player_song' song.id %}" class="btn">Play</a>
+                    <a href="{% url 'delete_song' song.id %}" class="btn btn-danger" onclick="return confirm('Delete this song?');">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>You haven't uploaded any songs yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

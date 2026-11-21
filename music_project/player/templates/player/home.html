@@ -1,0 +1,34 @@
+{% extends 'player/base.html' %}
+
+{% block content %}
+<div class="card">
+    
+    <h1>Welcome to CasaMusic</h1>
+    <p>Listen to community-uploaded tracks or create an account to upload your own music.</p>
+    <a href="{% url 'music_player' %}" class="btn">Open Music Player</a>
+</div>
+
+<div class="card">
+    <h2>Latest Tracks</h2>
+    {% if songs %}
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Uploaded By</th>
+                <th>Action</th>
+            </tr>
+            {% for song in songs %}
+            <tr>
+                <td>{{ song.title }}</td>
+                <td>{{ song.artist }}</td>
+                <td>{{ song.uploaded_by.username }}</td>
+                <td><a href="{% url 'music_player_song' song.id %}" class="btn">Play</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No songs available yet. <a href="{% url 'register' %}">Register</a> to upload the first track!</p>
+    {% endif %}
+</div>
+{% endblock %}

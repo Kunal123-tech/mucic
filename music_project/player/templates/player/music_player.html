@@ -1,0 +1,61 @@
+{% extends 'player/base.html' %}
+
+{% block content %}
+<div class="card" style="text-align: center;">
+    {% if song %}
+    <h1>CasaMusic</h1>
+        <h2>Now Playing</h2>
+        <h3>{{ song.title }}</h3>
+        <p style="color: #666;">Artist: {{ song.artist }}</p>
+
+        <!-- Native HTML5 Audio Player -->
+        <audio id="audioPlayer" controls autoplay style="width: 100%; margin: 20px 0;">
+            <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+        <div>
+            <a href="{% url 'music_player_song' prev_song.id %}" class="btn btn-secondary">&laquo; Previous</a>
+            <a href="{% url 'music_player_song' next_song.id %}" class="btn btn-secondary">Next &raquo;</a>
+        </div>
+    {% else %}
+        <h2>No Music Available</h2>
+        <p>Upload some songs from your dashboard to start listening.</p>
+    {% endif %}
+</div>
+
+{% if all_songs %}
+<div class="card">
+    <h3>Playlist</h3>
+    <table>
+        <tr>
+            <th>Track</th>
+            <th>Artist</th>
+            <th>Select</th>
+        </tr>
+        {% for track in all_songs %}
+        <tr {% if track.id == song.id %}style="background-color: #e8f8ee; font-weight: bold;"{% endif %}>
+            <td>{{ track.title }}</td>
+            <td>{{ track.artist }}</td>
+            <td>
+                {% if track.id == song.id %}
+                    Playing
+                {% else %}
+                    <a href="{% url 'music_player_song' track.id %}" class="btn">Play</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endif %}
+
+{% if song %}
+<script>
+    // Automatically go to the next song when the current song ends
+    document.getElementById('audioPlayer').addEventListener('ended', function() {
+        window.location.href = "{% url 'music_player_song' next_song.id %}";
+    });
+</script>
+{% endif %}
+{% endblock %}
